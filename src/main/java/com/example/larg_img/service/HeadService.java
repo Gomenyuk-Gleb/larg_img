@@ -7,8 +7,11 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.LaxRedirectStrategy;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -21,6 +24,7 @@ public class HeadService {
 
     RestTemplate restTemplate = new RestTemplate();
 
+    @Cacheable(value = "largestURLIMG")
     public String largestURLIMG(String sol) throws JsonProcessingException {
         String buildURL = buildURL(sol);
         ResponseEntity<String> forEntity = restTemplate.getForEntity(buildURL, String.class);
@@ -48,5 +52,11 @@ public class HeadService {
         ResponseEntity<String> forEntity = restTemplate.getForEntity(url, String.class);
 
         return Pair.of(url, forEntity.getHeaders().getContentLength());
+    }
+
+    @CacheEvict(value = "largestURLIMG")
+    @Scheduled(cron = "0 0 0 * * ?")
+    public void restartCache(){
+
     }
 }

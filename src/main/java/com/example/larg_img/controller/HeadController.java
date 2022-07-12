@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
+import java.util.Collection;
+import java.util.List;
 
 @RestController
 public class HeadController {
-
-
     private final HeadService headService;
 
     public HeadController(HeadService headService) {
